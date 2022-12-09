@@ -1,0 +1,26 @@
+# Import the necessary libraries
+import requests
+from bs4 import BeautifulSoup
+
+# Set the URL of the website or web page to scrape
+url = "https://www.tradingview.com/chart/?symbol=NASDAQ%3ANVDA"
+
+# Use the requests library to send a GET request to the URL
+response = requests.get(url)
+
+# Use the BeautifulSoup library to parse the HTML content of the response
+soup = BeautifulSoup(response.content, "html.parser")
+
+# Extract the data that you want from the HTML content using BeautifulSoup
+price_trends = soup.find_all("span", class_="price-trend")
+market_value = soup.find_all("div", class_="market-value")
+price_open = soup.find_all("div", class_="price-open")
+price_close = soup.find_all("div", class_="price-close")
+price_day_change = soup.find_all("div", class_="price-day-change")
+volume = soup.find_all("div", class_="volume")
+current_price = soup.find_all("div", class_="current-price")
+
+# Save the data to a file or database
+with open("tradeview-data.txt", "w") as f:
+    for trend, value, open, close, day_change, vol, curr in zip(price_trends, market_value, price_open, price_close, price_day_change, volume, current_price):
+        f.write(trend.text + ": " + value.text + ", " + open.text + ", " + close.text + ", " + day_change.text + ", " + vol.text + ", " + curr.text + "\n")
